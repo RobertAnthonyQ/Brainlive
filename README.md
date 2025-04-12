@@ -266,3 +266,140 @@ Here are some common neuron IDs and their corresponding names:
 - `148:Somatosensory Cortex`
 - `149:Hippocampus`
 - `150:Amygdala`
+
+## Activating Nodes Directly via HTTP
+
+You can activate nodes directly by sending HTTP requests to the brain API without using the Python script. Here are examples using different methods:
+
+### Using cURL
+
+```bash
+# Activate a single node
+curl -X POST http://localhost:3000/api/brain/activate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nodes": [
+      {"id": "144", "name": "Visual Cortex"}
+    ],
+    "append": false
+  }'
+
+# Activate multiple nodes
+curl -X POST http://localhost:3000/api/brain/activate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nodes": [
+      {"id": "144", "name": "Visual Cortex"},
+      {"id": "145", "name": "Motor Cortex"}
+    ],
+    "append": false
+  }'
+
+# Check current status
+curl http://localhost:3000/api/brain/status
+
+# Reset visualization
+curl -X POST http://localhost:3000/api/brain/reset
+```
+
+### Using JavaScript (Browser Console)
+
+```javascript
+// Activate a single node
+fetch("http://localhost:3000/api/brain/activate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    nodes: [{ id: "144", name: "Visual Cortex" }],
+    append: false,
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Activate multiple nodes
+fetch("http://localhost:3000/api/brain/activate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    nodes: [
+      { id: "144", name: "Visual Cortex" },
+      { id: "145", name: "Motor Cortex" },
+    ],
+    append: false,
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Check status
+fetch("http://localhost:3000/api/brain/status")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Reset visualization
+fetch("http://localhost:3000/api/brain/reset", {
+  method: "POST",
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+```
+
+### Using Python Requests (Alternative to the Script)
+
+```python
+import requests
+
+# Activate nodes
+response = requests.post(
+    'http://localhost:3000/api/brain/activate',
+    json={
+        'nodes': [
+            {'id': '144', 'name': 'Visual Cortex'},
+            {'id': '145', 'name': 'Motor Cortex'}
+        ],
+        'append': False
+    }
+)
+print(response.json())
+
+# Check status
+response = requests.get('http://localhost:3000/api/brain/status')
+print(response.json())
+
+# Reset visualization
+response = requests.post('http://localhost:3000/api/brain/reset')
+print(response.json())
+```
+
+### Using Postman
+
+1. Create a new POST request to `http://localhost:3000/api/brain/activate`
+2. Set the Content-Type header to `application/json`
+3. In the request body (raw JSON), use:
+
+```json
+{
+  "nodes": [
+    { "id": "144", "name": "Visual Cortex" },
+    { "id": "145", "name": "Motor Cortex" }
+  ],
+  "append": false
+}
+```
+
+### Common Node IDs and Names
+
+Here are some common neuron IDs and their corresponding names:
+
+- `144:Visual Cortex`
+- `145:Motor Cortex`
+- `146:Prefrontal Cortex`
+- `147:Auditory Cortex`
+- `148:Somatosensory Cortex`
+- `149:Hippocampus`
+- `150:Amygdala`
