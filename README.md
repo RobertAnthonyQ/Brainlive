@@ -9,18 +9,22 @@ A 3D visualization tool for Neo4j graph databases using Three.js. This applicati
 - Automatic node and relationship coloring based on types
 - Data caching for improved performance
 - API endpoint for Neo4j database queries
+- Brain visualization with neuron connections
+- Real-time chat interface
+- Timeline visualization
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
 - Neo4j Database (running locally or remotely)
+- Python 3.x (for brain control functionality)
 
 ## Installation
 
 1. Clone this repository:
 
    ```
-   git clone <repository-url>
+   git clone https://github.com/RobertAnthonyQ/Brainlive
    cd neo4j-3d-graph-visualizer
    ```
 
@@ -28,6 +32,7 @@ A 3D visualization tool for Neo4j graph databases using Three.js. This applicati
 
    ```
    npm install
+   pip install -r requirements.txt
    ```
 
 3. Configure Neo4j connection:
@@ -48,6 +53,12 @@ Start the application in development mode with hot-reloading:
 npm run dev
 ```
 
+Start the brain control server:
+
+```
+python neo4j_brain_control.py
+```
+
 ### Production Mode
 
 Start the application in production mode:
@@ -57,6 +68,88 @@ npm start
 ```
 
 Open your browser and navigate to `http://localhost:3000` to view the application.
+
+## API Endpoints
+
+### Neo4j API (`/api/neo4j`)
+
+- **GET** `/api/neo4j/nodes` - Get all nodes
+- **GET** `/api/neo4j/relationships` - Get all relationships
+- **GET** `/api/neo4j/query` - Execute custom Cypher query
+- **POST** `/api/neo4j/query` - Execute custom Cypher query with parameters
+
+### Brain API (`/api/brain`)
+
+- **GET** `/api/brain/status` - Get brain status
+- **POST** `/api/brain/command` - Send command to brain
+- **GET** `/api/brain/neurons` - Get all neurons
+- **GET** `/api/brain/connections` - Get all neuron connections
+
+### Example API Calls
+
+```javascript
+// Get all nodes
+fetch("/api/neo4j/nodes")
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Execute custom query
+fetch("/api/neo4j/query", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    query: "MATCH (n) RETURN n LIMIT 10",
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+
+// Send brain command
+fetch("/api/brain/command", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    command: "activate",
+    parameters: {
+      neuronId: "123",
+    },
+  }),
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data));
+```
+
+## Project Structure
+
+```
+├── index.html           # Main HTML file
+├── package.json         # Project dependencies and scripts
+├── requirements.txt     # Python dependencies
+├── neo4j_brain_control.py # Python brain control server
+├── src/
+│   ├── api/
+│   │   ├── neo4jApi.js  # API functions for Neo4j data
+│   │   ├── brain.js     # Brain API implementation
+│   │   ├── brain_client.js # Brain client implementation
+│   │   └── server.js    # Express server implementation
+│   ├── components/
+│   │   ├── ChatInterface.js # Chat interface component
+│   │   └── TimelineInterface.js # Timeline visualization
+│   ├── models/
+│   │   ├── Brain.js            # 3D brain visualization
+│   │   ├── BrainApiClient.js   # Brain API client
+│   │   ├── GraphDataService.js # Neo4j data service
+│   │   ├── GraphVisualizer.js  # Neo4j visualization
+│   │   ├── Neuron.js           # Node representation
+│   │   ├── NeuronConnection.js # Relationship representation
+│   │   └── model3d/
+│   │       └── cerebro.fbx     # 3D brain model
+│   └── main.js          # Application entry point
+```
 
 ## Configuration Options
 
@@ -80,119 +173,96 @@ const graphVisualizer = new GraphVisualizer(container, {
 });
 ```
 
-## Project Structure
+## Contributing
 
-```
-├── index.html           # Main HTML file
-├── package.json         # Project dependencies and scripts
-├── src/
-│   ├── api/
-│   │   ├── neo4jApi.js  # API functions for Neo4j data
-│   │   └── server.js    # Express server implementation
-│   ├── models/
-│   │   ├── Brain.js            # 3D brain visualization
-│   │   ├── GraphDataService.js # Neo4j data service
-│   │   ├── GraphVisualizer.js  # Neo4j visualization
-│   │   ├── Neuron.js           # Node representation
-│   │   └── NeuronConnection.js # Relationship representation
-│   └── main.js          # Application entry point
-```
-
-## Development Notes
-
-- For development without a Neo4j database, set `useMockData: true` in the GraphVisualizer options.
-- The visualization is optimized for graphs with up to a few hundred nodes and relationships. For larger graphs, consider using additional filtering.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 # Brain Visualization Control System
 
 This system allows you to control the 3D brain visualization by activating specific neurons and their connections via a simple Python script.
 
-## System Components
+## Brain Control Examples
 
-1. **Flask Server (server.py)** - Handles requests to activate/deactivate neurons
-2. **Python Client (brain_control.py)** - Command-line tool to send activation requests
-3. **JavaScript Integration (Brain.js)** - Modified to respond to server state
+### Activating Nodes
 
-## Setup & Installation
+You can activate specific neurons in the brain visualization using the `neo4j_brain_control.py` script. Here are some examples:
 
-### Requirements
-
-- Python 3.6+
-- Flask
-- Requests library
-
-Install the required Python packages:
+1. **Activate a single neuron**:
 
 ```bash
-pip install flask flask-cors requests
+python neo4j_brain_control.py activar -n "144:Visual Cortex"
 ```
 
-## Usage
-
-### 1. Start the Flask Server
-
-First, start the Flask server that will handle the requests:
+2. **Activate multiple neurons**:
 
 ```bash
-python server.py
+python neo4j_brain_control.py activar -n "144:Visual Cortex" "145:Motor Cortex" "146:Prefrontal Cortex"
 ```
 
-The server will run on http://localhost:5000 by default.
-
-### 2. Initialize the Brain Visualization
-
-Make sure the 3D brain visualization is initialized in your JavaScript code:
-
-```javascript
-// After initializing the Brain instance
-brain.initializeApiIntegration("http://localhost:5000");
-```
-
-### 3. Use the Python Client to Control Neurons
-
-Use the brain_control.py script to activate specific neurons:
+3. **Activate neurons and append to existing active nodes**:
 
 ```bash
-# Activate specific neurons by ID (this will also activate connections between them)
-python brain_control.py activate --nodes neuron-1 neuron-5 neuron-8
-
-# Reset the visualization (deactivate all neurons and connections)
-python brain_control.py reset
-
-# Check the current status of active neurons and connections
-python brain_control.py status
+python neo4j_brain_control.py activar -n "144:Visual Cortex" "145:Motor Cortex" --append
 ```
 
-## How It Works
+4. **Check current active nodes**:
 
-1. The Python client sends POST requests to the Flask server
-2. The server keeps track of which neurons should be active
-3. The brain visualization polls the server regularly to update its state
-4. Active neurons appear brighter and more visible
-5. Connections between active neurons are animated with a pulsing effect
+```bash
+python neo4j_brain_control.py estado
+```
 
-## Example Workflow
+5. **Reset visualization**:
 
-1. Start with all neurons inactive (dim and semi-transparent)
-2. Activate specific neurons using the Python client
-3. The activated neurons become brighter and fully opaque
-4. If two activated neurons have a connection, that connection becomes visible and animated
-5. Reset the visualization to return to the initial state
+```bash
+python neo4j_brain_control.py reiniciar
+```
 
-## Customization
+### Using a Custom Server URL
 
-You can modify the appearance of active/inactive neurons by changing the values in these methods:
+If your server is running on a different URL, you can specify it with the `--server` flag:
 
-- `activateNeuron()` - Controls how active neurons appear
-- `activateConnection()` - Controls how active connections appear
-- `resetNeuronState()` - Controls how inactive neurons/connections appear
+```bash
+python neo4j_brain_control.py --server "http://localhost:3000/api/brain" activar -n "144:Visual Cortex"
+```
 
-## Troubleshooting
+### Example Output
 
-- If connections aren't appearing, check that the maximum connection distance in `connectionConfig` is set appropriately
-- Make sure the server is running and accessible from your web application
-- Check browser console for any connection errors
+When you activate nodes, you'll see output like this:
+
+```
+Enviando petición a http://localhost:3000/api/brain/activate
+Datos: {
+  "nodes": [
+    {"id": "144", "name": "Visual Cortex"},
+    {"id": "145", "name": "Motor Cortex"}
+  ],
+  "append": false
+}
+
+✅ Nodos activados
+Estado: {"activeNodes": ["144", "145"]}
+
+Nodos activos:
+ ➤ 144 - Visual Cortex
+ ➤ 145 - Motor Cortex
+```
+
+### Common Node IDs and Names
+
+Here are some common neuron IDs and their corresponding names:
+
+- `144:Visual Cortex`
+- `145:Motor Cortex`
+- `146:Prefrontal Cortex`
+- `147:Auditory Cortex`
+- `148:Somatosensory Cortex`
+- `149:Hippocampus`
+- `150:Amygdala`
