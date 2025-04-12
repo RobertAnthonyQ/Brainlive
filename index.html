@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo4j 3D Graph Visualizer</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.module.js",
+          "three/examples/jsm/loaders/FBXLoader.js": "https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/loaders/FBXLoader.js",
+          "three/examples/jsm/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/controls/OrbitControls.js"
+        }
+      }
+    </script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #000;
+        font-family: Arial, sans-serif;
+      }
+
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        z-index: 1000;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      #loading h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">
+      <h1>Neo4j 3D Graph Visualizer</h1>
+      <div class="spinner"></div>
+      <p>Loading visualization...</p>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+    <script>
+      // Hide loading screen when visualization is ready
+      window.addEventListener("load", function () {
+        setTimeout(() => {
+          const loading = document.getElementById("loading");
+          loading.style.opacity = "0";
+          setTimeout(() => {
+            loading.style.display = "none";
+          }, 500);
+        }, 2000);
+      });
+
+      document
+        .getElementById("forceRefreshBtn")
+        .addEventListener("click", function () {
+          // Force a full API reload
+          if (window.graphVisualizer) {
+            window.graphVisualizer.refresh();
+            console.log("Forced refresh initiated");
+          } else {
+            console.warn("graphVisualizer not found in window object");
+            location.reload();
+          }
+        });
+    </script>
+  </body>
+</html>
